@@ -164,12 +164,27 @@ what Commons categories and templates it needs.
 
 ### Prerequisites
 
-**Python 3.9+** — that's it.  No system packages, no root access needed.
+**Python 3.9+** is all you strictly need.  The classifier uses a pure-Python
+JPEG parser as a fallback when `exiftool` isn't available.
 
-The classifier uses a pure-Python JPEG parser to extract GPano XMP
-metadata directly from image files.  It also works with Pillow's built-in
-XMP reader.  If you happen to have `exiftool` installed, it'll use that as
-a faster fallback — but it's entirely optional.
+**For best results** (and to handle edge cases like non-standard XMP
+placement, TIFF files, and PNG metadata), install `exiftool` — a single
+portable binary available on all platforms:
+
+```bash
+# macOS:
+brew install exiftool
+
+# Debian/Ubuntu:
+sudo apt install libimage-exiftool-perl
+
+# Windows / portable:
+# Download the standalone exiftool.exe from https://exiftool.org/
+```
+
+The classifier auto-detects whether exiftool is installed and falls back
+to pure Python if it's not.  Everything works either way — exiftool just
+handles more edge cases.
 
 ### Setup
 
@@ -231,7 +246,7 @@ expensive:
 
 | Layer | What it checks | Speed | Reliability |
 |-------|---------------|-------|------------|
-| 1. GPano XMP metadata | Embedded 360° camera tags (exiftool) | Instant | ★★★★★ Gold standard |
+| 1. GPano XMP metadata | Embedded 360° camera tags (exiftool, or pure Python fallback) | Instant | ★★★★★ Gold standard |
 | 2. Heuristics | Aspect ratio, camera model DB, filename patterns | Instant | ★★★★☆ Strong signal |
 | 3. Pixel analysis | OpenCV: edge continuity, zenith/nadir, distortion, seams | 1–3 sec | ★★★☆☆ Confirms heuristics |
 | 4. ML vision model | CLIP zero-shot classification (optional) | 5–15 sec | ★★★☆☆ Edge cases only |

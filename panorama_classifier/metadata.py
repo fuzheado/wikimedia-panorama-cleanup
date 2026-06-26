@@ -1,8 +1,13 @@
 """
 Layer 1: Metadata extraction — GPano XMP and EXIF.
 
-Pure Python implementation.  No system dependencies required.
-Extracts GPano XMP from JPEG APP1 markers and EXIF via Pillow.
+Python's XMP library ecosystem is sparse.  exiftool (a single portable
+Perl binary) is the gold standard for reading XMP/GPano metadata and is
+used as the primary method when available.
+
+When exiftool is not installed, a pure-Python JPEG APP1 parser (stdlib
+only) extracts XMP directly from the JPEG byte stream.  Pillow's getxmp()
+serves as a tertiary fallback.
 
 GPano XMP is the gold standard for 360° photo classification.
 When present, confidence ≥ 0.99.
@@ -33,11 +38,15 @@ def extract_metadata(image_path):
     result = {"gpano": {}, "exif": {}}
 
     # --- Extract GPano XMP ---
-    gpano = _extract_gpano_pure_python(image_path)
+    # Try methods in order of reliability:
+    #   1. exiftool (most robust, handles all edge cases)
+    #   2. Pure Python JPEG APP1 parser (no deps, works everywhere)
+    #   3. Pillow getxmp() (convenient but version-dependent)
+    gpano = _extract_gpano_via_exiftool(image_path)
+    if not gpano:
+        gpano = _extract_gpano_pure_python(image_path)
     if not gpano:
         gpano = _extract_gpano_via_pillow(image_path)
-    if not gpano:
-        gpano = _extract_gpano_via_exiftool(image_path)
 
     result["gpano"] = gpano or {}
 
@@ -174,7 +183,12 @@ def _extract_gpano_from_pillow_dict(xmp_dict):
 
 
 def _extract_gpano_via_exiftool(image_path):
-    """Extract GPano via exiftool subprocess (optional fallback)."""
+    """Extract GPano via exiftool subprocess (primary method).
+
+    exiftool is a single static binary — no runtime deps beyond Perl.
+    Install: brew install exiftool / apt install libimage-exiftool-perl
+    Or download from https://exiftool.org/
+    """
     try:
         proc = subprocess.run(
             ["exiftool", "-j", "-GPano:all", image_path],
