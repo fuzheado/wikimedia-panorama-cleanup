@@ -1,0 +1,9 @@
+# Core dependencies (required)
+Pillow>=10.0
+numpy>=1.24
+opencv-python>=4.8
+
+# Optional: ML vision model for edge cases
+# Uncomment these if you want the CLIP-based classifier (adds ~2 GB download):
+# torch>=2.0
+# open-clip-torch>=2.20
