@@ -1,0 +1,25 @@
+[project]
+name = "panorama-classifier"
+version = "0.1.0"
+description = "Classify 360° and panoramic photos for Wikimedia Commons categorization"
+readme = "README.md"
+license = {text = "CC0-1.0"}
+requires-python = ">=3.9"
+dependencies = [
+    "Pillow>=10.0",
+    "numpy>=1.24",
+    "opencv-python>=4.8",
+]
+
+[project.scripts]
+panorama-classifier = "panorama_classifier.cli:main"
+
+[project.optional-dependencies]
+ml = ["torch>=2.0", "open-clip-torch>=2.20"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["panorama_classifier*"]
