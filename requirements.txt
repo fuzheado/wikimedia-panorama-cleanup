@@ -1,7 +1,13 @@
 # Core dependencies (required)
 Pillow>=10.0
+defusedxml>=0.7
 numpy>=1.24
 opencv-python>=4.8
+
+# Optional: exiftool (system package, faster XMP extraction)
+# brew install exiftool        # macOS
+# sudo apt install libimage-exiftool-perl  # Debian/Ubuntu
+# The classifier works without it — uses pure Python JPEG XMP parser.
 
 # Optional: ML vision model for edge cases
 # Uncomment these if you want the CLIP-based classifier (adds ~2 GB download):

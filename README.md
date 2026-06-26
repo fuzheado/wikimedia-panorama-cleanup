@@ -164,19 +164,12 @@ what Commons categories and templates it needs.
 
 ### Prerequisites
 
-You need **Python 3.9+** and **exiftool** (a system tool for reading
-image metadata — used to extract GPano XMP tags that 360° cameras embed).
+**Python 3.9+** — that's it.  No system packages, no root access needed.
 
-```bash
-# macOS:
-brew install exiftool
-
-# Debian/Ubuntu:
-sudo apt install libimage-exiftool-perl
-
-# Windows:
-# Download from https://exiftool.org/
-```
+The classifier uses a pure-Python JPEG parser to extract GPano XMP
+metadata directly from image files.  It also works with Pillow's built-in
+XMP reader.  If you happen to have `exiftool` installed, it'll use that as
+a faster fallback — but it's entirely optional.
 
 ### Setup
 

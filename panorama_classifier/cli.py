@@ -15,6 +15,10 @@ import json
 import os
 import sys
 
+# Allow large equirectangular images (can exceed Pillow's default ~89MP limit)
+from PIL import Image
+Image.MAX_IMAGE_PIXELS = None
+
 from .metadata import extract_metadata, classify_from_gpano
 from .heuristics import (
     classify_by_aspect_ratio,
@@ -58,7 +62,6 @@ def classify_image(image_path, use_pixels=True):
 
     if not width or not height:
         try:
-            from PIL import Image
             with Image.open(image_path) as img:
                 width, height = img.size
         except Exception:
